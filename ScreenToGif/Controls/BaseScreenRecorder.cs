@@ -30,7 +30,7 @@ public class BaseScreenRecorder : BaseRecorder
     /// <summary>
     /// Deals with all screen capture methods.
     /// </summary>
-    internal ICapture Capture;
+    internal IScreenCapture Capture;
 
     /// <summary>
     /// Lists of pressed keys.
@@ -95,10 +95,10 @@ public class BaseScreenRecorder : BaseRecorder
         }
     }
 
-    internal ICapture GetDirectCapture()
+    internal IScreenCapture GetDirectCapture()
     {
         if (UserSettings.All.OnlyCaptureChanges)
-            return UserSettings.All.UseMemoryCache ? (ICapture)new DirectChangedCachedCapture() : new DirectChangedImageCapture();
+            return UserSettings.All.UseMemoryCache ? new DirectChangedCachedCapture() : new DirectChangedImageCapture();
 
         return UserSettings.All.UseMemoryCache ? new DirectCachedCapture() : new DirectImageCapture();
     }

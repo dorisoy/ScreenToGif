@@ -1,3 +1,4 @@
+using ScreenToGif.Domain.Enums;
 using System.Windows;
 using System.Windows.Media;
 
@@ -24,6 +25,6 @@ public class TextSequence : SizeableSequence
 
     public TextSequence()
     {
-        Type = Types.Text;
+        Type = SequenceTypes.Text;
     }
 }

@@ -16,6 +16,7 @@ namespace ScreenToGif.Native
         internal const string WinMm = "winmm.dll";
         internal const string Kernel32 = "kernel32.dll";
 
+        internal const int MaxPath = 260;
 
         internal static HandleRef NullHandleRef = new(null, IntPtr.Zero);
 

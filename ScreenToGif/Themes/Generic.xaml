@@ -11,6 +11,7 @@
         <ResourceDictionary Source="/ScreenToGif;component/Themes/Common.xaml"/>
         <ResourceDictionary Source="/ScreenToGif;component/Themes/EncoderListViewItem.xaml"/>
         <ResourceDictionary Source="/ScreenToGif;component/Themes/Ribbon.xaml"/>
+        <ResourceDictionary Source="/ScreenToGif;component/Themes/Controls/Timeline.xaml"/>
         <ResourceDictionary Source="/ScreenToGif;component/Themes/Controls/ExtendedComboBox.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

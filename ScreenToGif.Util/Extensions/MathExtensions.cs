@@ -12,6 +12,11 @@ public static class MathExtensions
         right = (int)(value & 0xffffffffL);
     }
 
+    public static bool GreaterThan(this double a, double b, double epsilon = 0.0001D)
+    {
+        return a > b && !NearlyEquals(a, b, epsilon);
+    }
+
     public static double RoundUpValue(double value, int decimalpoint = 0)
     {
         var result = Math.Round(value, decimalpoint);

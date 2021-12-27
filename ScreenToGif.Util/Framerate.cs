@@ -64,6 +64,8 @@ public static class FrameRate
         return mili;
     }
 
+    public static long GetElapsedTicks() => _stopwatch?.ElapsedTicks ?? -1L;
+
     /// <summary>
     /// Determine that a stop/pause of the recording.
     /// </summary>

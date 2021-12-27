@@ -1,3 +1,4 @@
+using ScreenToGif.Domain.Enums;
 using System.Windows.Shapes;
 
 namespace ScreenToGif.Domain.Models.Project.Sequences;
@@ -9,6 +10,6 @@ public class ShapeSequence : SizeableSequence
 
     public ShapeSequence()
     {
-        Type = Types.Shape;
+        Type = SequenceTypes.Shape;
     }
 }

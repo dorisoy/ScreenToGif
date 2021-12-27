@@ -47,7 +47,7 @@ public class ProjectInfo
     /// Where this project was created?
     /// </summary>
     [DataMember(Order = 4)]
-    public ProjectByType CreatedBy { get; set; } = ProjectByType.Unknown;
+    public ProjectSources CreatedBy { get; set; } = ProjectSources.Unknown;
 
     /// <summary>
     /// The width of the canvas.
@@ -106,6 +106,8 @@ public class ProjectInfo
     /// </summary>
     public string CachePath => Path.Combine(UserSettings.All.TemporaryFolderResolved, "ScreenToGif", "Recording", RelativePath, "Frames.cache");
 
+    public string EventsPath => Path.Combine(UserSettings.All.TemporaryFolderResolved, "ScreenToGif", "Recording", RelativePath, "Events.cache");
+
     /// <summary>
     /// Check if there's any frame on this project.
     /// </summary>
@@ -119,7 +121,7 @@ public class ProjectInfo
 
     #region Methods
 
-    public ProjectInfo CreateProjectFolder(ProjectByType creator)
+    public ProjectInfo CreateProjectFolder(ProjectSources creator)
     {
         IsNew = true;
         RelativePath = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + Path.DirectorySeparatorChar;

@@ -1411,7 +1411,7 @@ public static class ImageMethods
     /// </summary>
     /// <param name="imageBytes">Image in a byte type</param>
     /// <returns>System.Drawing.Bitmap</returns>
-    private static Bitmap ConvertBytesToImage(byte[] imageBytes)
+    public static Bitmap ConvertBytesToImage(byte[] imageBytes)
     {
         if (imageBytes == null || imageBytes.Length == 0)
             return null;
@@ -1484,18 +1484,58 @@ public static class ImageMethods
         return isCreated ? bitmapImage : null;
     }
 
-    public static BitmapSource FromArray(List<byte> data, int w, int h, int ch)
+    public static BitmapSource FromArray(byte[] data, int width, int height, int channels, int bitsPerPixel = 32)
+    {
+        var format = PixelFormats.Default;
+        var stride = channels * width;
+
+        if (channels == 1)
+        {
+            if (bitsPerPixel == 1)
+            {
+                format = PixelFormats.BlackWhite;
+                stride = width / 8;
+            }
+            else
+                format = PixelFormats.Gray8; //Grey scale image 0-255.
+        }
+        else if (channels == 3)
+        {
+            format = PixelFormats.Bgr24; //RGB.
+            stride = 3 * ((bitsPerPixel * width + 31) / 32);
+        }
+        else if (channels == 4)
+        {
+            format = PixelFormats.Bgr32; //RGB + alpha.
+            stride = 4 * ((bitsPerPixel * width + 31) / 32);
+        }
+
+        //for (var i = data.Count; i < width * height * ch; i++) //data.Count - 1
+        //    data.Add(0);
+
+        var wbm = new WriteableBitmap(width, height, 96, 96, format, null);
+        wbm.WritePixels(new Int32Rect(0, 0, width, height), data, stride, 0);
+
+        return wbm;
+    }
+
+    public static BitmapSource FromArray(List<byte> data, int w, int h, int ch, int bitsPerPixel = 8)
     {
         var format = PixelFormats.Default;
 
         if (ch == 1)
-            format = PixelFormats.Gray8; //Grey scale image 0-255.
+        {
+            if (bitsPerPixel == 1)
+                format = PixelFormats.BlackWhite;
+            else
+                format = PixelFormats.Gray8; //Grey scale image 0-255.
+        }
         else if (ch == 3)
             format = PixelFormats.Bgr24; //RGB.
         else if (ch == 4)
             format = PixelFormats.Bgr32; //RGB + alpha.
 
-        for (var i = data.Count - 1; i < w * h * ch; i++)
+        for (var i = data.Count; i < w * h * ch; i++) //data.Count - 1
             data.Add(0);
 
         var wbm = new WriteableBitmap(w, h, 96, 96, format, null);

@@ -7,6 +7,126 @@
     <v:ColorToAlpha x:Key="ColorToAlphaConverter"/>
     <v:InvertedBool x:Key="InvertedBool"/>
 
+    <!--RibbonTab Style-->
+    <Style TargetType="{x:Type r:RibbonTab}">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource Element.Foreground}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type r:RibbonTab}">
+                    <Grid Name="Panel" Background="Transparent">
+                        <Border Name="ContentBorder" BorderBrush="{DynamicResource Element.Foreground.Header}" Background="{TemplateBinding Background}" BorderThickness="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" x:Name="ImageBorder" Background="{TemplateBinding Icon}" Margin="10,5,0,5"
+                                        Height="14" Width="14" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity=".6"/>
+
+                                <!--Header text-->
+                                <TextBlock Grid.Column="1" x:Name="HeaderTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Header}" Margin="5,5,10,6"/>
+                                <TextBlock Grid.Column="1" x:Name="FocusedHeaderTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Header}" Margin="5,5,10,6" 
+                                           FontWeight="SemiBold" Visibility="Hidden"/>
+
+                                <!--Accent border-->
+                                <Border Grid.Column="0" Grid.ColumnSpan="2" x:Name="SelectionBorder" Height="3" Margin="10,0,10,1" Background="{DynamicResource Element.Selection}" VerticalAlignment="Bottom" Opacity="0"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="ImageBorder" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="HeaderTextBlock" Property="Margin" Value="10,5,10,6"/>
+                            <Setter TargetName="FocusedHeaderTextBlock" Property="Margin" Value="10,5,10,6"/>
+                        </Trigger>
+
+                        <!--MouseHover-->
+                        <Trigger SourceName="Panel" Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetName="ImageBorder" Storyboard.TargetProperty="Opacity" To="1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="ImageBorder"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+
+                            <Setter Property="Background" Value="{DynamicResource Panel.Background.Level2}"/>
+                            <Setter TargetName="HeaderTextBlock" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="FocusedHeaderTextBlock" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+
+                        <!--Only works with MultiDataTrigger in here-->
+                        <!--Expand the accent border when selected and mouse is hovering-->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=Panel, Path=IsMouseOver, FallbackValue=False}" Value="True"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsSelected, FallbackValue=False}" Value="True"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DisplayAccent, FallbackValue=False}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation Duration="0:0:0:0.15" Storyboard.TargetName="SelectionBorder" Storyboard.TargetProperty="Margin" To="0,0,0,1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation Duration="0:0:0:0.15" Storyboard.TargetName="SelectionBorder" Storyboard.TargetProperty="Margin"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsSelected, FallbackValue=False}" Value="True"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DisplayAccent, FallbackValue=False}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0:0.15" Storyboard.TargetName="SelectionBorder" Storyboard.TargetProperty="Opacity" To="1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0:0.15" Storyboard.TargetName="SelectionBorder" Storyboard.TargetProperty="Opacity"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Panel.Background.Level2}"/>
+                            <Setter TargetName="ImageBorder" Property="Opacity" Value="1"/>
+
+                            <Setter TargetName="HeaderTextBlock" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="FocusedHeaderTextBlock" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--RibbonItem-->
     <Style TargetType="{x:Type r:RibbonItem}">
         <Setter Property="Background" Value="Transparent"/>

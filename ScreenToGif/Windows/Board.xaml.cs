@@ -155,7 +155,7 @@ public partial class Board
                 _capture = new Timer { Interval = 1000 / FpsNumericUpDown.Value };
 
                 Project?.Clear();
-                Project = new ProjectInfo().CreateProjectFolder(ProjectByType.BoardRecorder);
+                Project = new ProjectInfo().CreateProjectFolder(ProjectSources.BoardRecorder);
 
                 HeightIntegerBox.IsEnabled = false;
                 WidthIntegerBox.IsEnabled = false;

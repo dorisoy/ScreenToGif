@@ -1,3 +1,4 @@
+using ScreenToGif.Domain.Enums;
 using System.Windows.Media;
 
 namespace ScreenToGif.Domain.Models.Project.Sequences;
@@ -9,6 +10,6 @@ public class BrushSequence : SizeableSequence
 
     public BrushSequence()
     {
-        Type = Types.Brush;
+        Type = SequenceTypes.Brush;
     }
 }

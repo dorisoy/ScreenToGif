@@ -1,3 +1,4 @@
+using ScreenToGif.Domain.Enums;
 using ScreenToGif.Domain.Models.Project.Sequences.SubSequences;
 
 namespace ScreenToGif.Domain.Models.Project.Sequences;
@@ -12,6 +13,6 @@ public class KeySequence : SizeableSequence
 
     public KeySequence()
     {
-        Type = Types.Key;
+        Type = SequenceTypes.Key;
     }
 }
