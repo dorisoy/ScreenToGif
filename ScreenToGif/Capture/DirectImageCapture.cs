@@ -31,7 +31,7 @@ namespace ScreenToGif.Capture;
 /// https://walbourn.github.io/direct3d-sdk-debug-layer-tricks/
 /// https://devblogs.microsoft.com/cppblog/visual-studio-2015-and-graphics-tools-for-windows-10/
 /// </summary>
-internal class DirectImageCapture : BaseCapture
+internal class DirectImageCapture : ScreenCapture
 {
     #region Variables
 
@@ -110,16 +110,16 @@ internal class DirectImageCapture : BaseCapture
         base.Start(delay, left, top, width, height, dpi, project);
 
         //Only set as Started after actually finishing starting.
-        WasStarted = false;
+        WasFrameCaptureStarted = false;
 
         Initialize();
 
-        WasStarted = true;
+        WasFrameCaptureStarted = true;
     }
 
     public override void ResetConfiguration()
     {
-        DisposeInternal();
+        ExtraDisposeInternal();
         Initialize();
     }
 
@@ -380,7 +380,7 @@ internal class DirectImageCapture : BaseCapture
             frame.Image = bitmap;
 
             if (IsAcceptingFrames)
-                BlockingCollection.Add(frame);
+                FrameConsumer.Add(frame);
 
             #endregion
 
@@ -396,7 +396,7 @@ internal class DirectImageCapture : BaseCapture
         catch (SharpDXException se) when (se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceRemoved.Result.Code || se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceReset.Result.Code)
         {
             //When the device gets lost or reset, the resources should be instantiated again.
-            DisposeInternal();
+            ExtraDisposeInternal();
             Initialize();
 
             return FrameCount;
@@ -568,7 +568,7 @@ internal class DirectImageCapture : BaseCapture
             frame.Image = bitmap;
 
             if (IsAcceptingFrames)
-                BlockingCollection.Add(frame);
+                FrameConsumer.Add(frame);
 
             #endregion
 
@@ -584,7 +584,7 @@ internal class DirectImageCapture : BaseCapture
         catch (SharpDXException se) when (se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceRemoved.Result.Code || se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceReset.Result.Code)
         {
             //When the device gets lost or reset, the resources should be instantiated again.
-            DisposeInternal();
+            ExtraDisposeInternal();
             Initialize();
 
             return FrameCount;
@@ -713,7 +713,7 @@ internal class DirectImageCapture : BaseCapture
             frame.Path = $"{Project.FullPath}{FrameCount}.png";
             frame.Delay = FrameRate.GetMilliseconds();
             frame.Image = bitmap;
-            BlockingCollection.Add(frame);
+            FrameConsumer.Add(frame);
 
             #endregion
 
@@ -729,7 +729,7 @@ internal class DirectImageCapture : BaseCapture
         catch (SharpDXException se) when (se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceRemoved.Result.Code || se.ResultCode.Code == SharpDX.DXGI.ResultCode.DeviceReset.Result.Code)
         {
             //When the device gets lost or reset, the resources should be instantiated again.
-            DisposeInternal();
+            ExtraDisposeInternal();
             Initialize();
 
             return FrameCount;
@@ -1000,15 +1000,15 @@ internal class DirectImageCapture : BaseCapture
 
     public override async Task Stop()
     {
-        if (!WasStarted)
+        if (!WasFrameCaptureStarted)
             return;
 
-        DisposeInternal();
+        ExtraDisposeInternal();
 
         await base.Stop();
     }
 
-    internal void DisposeInternal()
+    internal void ExtraDisposeInternal()
     {
         Device.Dispose();
 
@@ -1033,45 +1033,44 @@ internal class DirectImageCapture : BaseCapture
             //https://stackoverflow.com/a/6374151/1735672
             //Bitmap struct, is used to get the cursor shape when SharpDX fails to do so. 
             var infoHeader = new BitmapInfoHeader();
-            infoHeader.biSize = (uint)Marshal.SizeOf(infoHeader);
-            infoHeader.biBitCount = 32;
-            infoHeader.biClrUsed = 0;
-            infoHeader.biClrImportant = 0;
-            infoHeader.biCompression = 0;
-            infoHeader.biHeight = -Height; //Negative, so the Y-axis will be positioned correctly.
-            infoHeader.biWidth = Width;
-            infoHeader.biPlanes = 1;
+            infoHeader.Size = (uint)Marshal.SizeOf(infoHeader);
+            infoHeader.BitCount = 32;
+            infoHeader.ClrUsed = 0;
+            infoHeader.ClrImportant = 0;
+            infoHeader.Compression = 0;
+            infoHeader.Height = -Height; //Negative, so the Y-axis will be positioned correctly.
+            infoHeader.Width = Width;
+            infoHeader.Planes = 1;
 
             try
             {
-                var cursorInfo = new CursorInfo();
-                cursorInfo.cbSize = Marshal.SizeOf(cursorInfo);
+                var cursorInfo = new CursorInfo(false);
 
                 if (!User32.GetCursorInfo(out cursorInfo))
                     return;
 
-                if (cursorInfo.flags == Native.Constants.CursorShowing)
+                if (cursorInfo.Flags == Native.Constants.CursorShowing)
                 {
-                    var hicon = User32.CopyIcon(cursorInfo.hCursor);
+                    var hicon = User32.CopyIcon(cursorInfo.CursorHandle);
 
                     if (hicon != IntPtr.Zero)
                     {
                         if (User32.GetIconInfo(hicon, out var iconInfo))
                         {
-                            frame.CursorX = cursorInfo.ptScreenPos.X - Left;
-                            frame.CursorY = cursorInfo.ptScreenPos.Y - Top;
+                            frame.CursorX = cursorInfo.ScreenPosition.X - Left;
+                            frame.CursorY = cursorInfo.ScreenPosition.Y - Top;
 
                             var bitmap = new Bitmap();
                             var hndl = GCHandle.Alloc(bitmap, GCHandleType.Pinned);
                             var ptrToBitmap = hndl.AddrOfPinnedObject();
-                            Gdi32.GetObject(iconInfo.hbmColor, Marshal.SizeOf<Bitmap>(), ptrToBitmap);
+                            Gdi32.GetObject(iconInfo.Color, Marshal.SizeOf<Bitmap>(), ptrToBitmap);
                             bitmap = Marshal.PtrToStructure<Bitmap>(ptrToBitmap);
                             hndl.Free();
 
                             //https://microsoft.public.vc.mfc.narkive.com/H1CZeqUk/how-can-i-get-bitmapinfo-object-from-bitmap-or-hbitmap
-                            infoHeader.biHeight = bitmap.bmHeight;
-                            infoHeader.biWidth = bitmap.bmWidth;
-                            infoHeader.biBitCount = (ushort)bitmap.bmBitsPixel;
+                            infoHeader.Height = (int)bitmap.bmHeight;
+                            infoHeader.Width = (int)bitmap.bmWidth;
+                            infoHeader.BitCount = (ushort)bitmap.bmBitsPixel;
 
                             var w = (bitmap.bmWidth * bitmap.bmBitsPixel + 31) / 8;
                             CursorShapeBuffer = new byte[w * bitmap.bmHeight];
@@ -1079,7 +1078,7 @@ internal class DirectImageCapture : BaseCapture
                             var windowDeviceContext = User32.GetWindowDC(IntPtr.Zero);
                             var compatibleBitmap = Gdi32.CreateCompatibleBitmap(windowDeviceContext, Width, Height);
 
-                            Gdi32.GetDIBits(windowDeviceContext, compatibleBitmap, 0, (uint)infoHeader.biHeight, CursorShapeBuffer, ref infoHeader, DibColorModes.RgbColors);
+                            Gdi32.GetDIBits(windowDeviceContext, compatibleBitmap, 0, (uint)infoHeader.Height, CursorShapeBuffer, ref infoHeader, DibColorModes.RgbColors);
 
                             //CursorShapeInfo = new OutputDuplicatePointerShapeInformation();
                             //CursorShapeInfo.Type = (int)OutputDuplicatePointerShapeType.Color;
@@ -1097,14 +1096,14 @@ internal class DirectImageCapture : BaseCapture
                             //Native.ReleaseDC(IntPtr.Zero, windowDeviceContext);
                         }
 
-                        Gdi32.DeleteObject(iconInfo.hbmColor);
-                        Gdi32.DeleteObject(iconInfo.hbmMask);
+                        Gdi32.DeleteObject(iconInfo.Color);
+                        Gdi32.DeleteObject(iconInfo.Mask);
                     }
 
                     User32.DestroyIcon(hicon);
                 }
 
-                Gdi32.DeleteObject(cursorInfo.hCursor);
+                Gdi32.DeleteObject(cursorInfo.CursorHandle);
             }
             catch (Exception e)
             {

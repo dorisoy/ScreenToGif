@@ -865,7 +865,7 @@ public partial class Recorder
 
                     #region To record
 
-                    Project = new ProjectInfo().CreateProjectFolder(ProjectByType.ScreenRecorder);
+                    Project = new ProjectInfo().CreateProjectFolder(ProjectSources.ScreenRecorder);
 
                     KeyList.Clear();
                     FrameCount = 0;
@@ -966,7 +966,7 @@ public partial class Recorder
         {
             try
             {
-                Project = new ProjectInfo().CreateProjectFolder(ProjectByType.ScreenRecorder);
+                Project = new ProjectInfo().CreateProjectFolder(ProjectSources.ScreenRecorder);
 
                 await PrepareCapture();
 

@@ -1,20 +1,15 @@
+using ScreenToGif.Domain.Enums;
+
 namespace ScreenToGif.Domain.Models.Project.Sequences;
 
 public class ObfuscationSequence : SizeableSequence
 {
-    public enum Modes : int
-    {
-        Pixelate,
-        Blur
-    }
-
-    public Modes ObfuscationMode { get; set; }
+    public ObfuscationModes ObfuscationMode { get; set; }
 
     //ObfuscationSize, other properties.
-
-
+    
     public ObfuscationSequence()
     {
-        Type = Types.Obfuscation;
+        Type = SequenceTypes.Obfuscation;
     }
 }

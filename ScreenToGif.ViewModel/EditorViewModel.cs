@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ScreenToGif.Domain.Models.Project;
 using ScreenToGif.Domain.ViewModels;
 
 namespace ScreenToGif.ViewModel;
@@ -11,7 +10,7 @@ public class EditorViewModel : BaseViewModel
 {
     #region Variables
 
-    private Project _project = null;
+    private ProjectViewModel _project = null;
     private TimeSpan _currentTime = TimeSpan.Zero;
     private int _currentIndex = -1;
     private WriteableBitmap _renderedImage = null;
@@ -29,7 +28,7 @@ public class EditorViewModel : BaseViewModel
         new CommandBinding(FindCommand("Command.NewWebcamRecording"), (sender, args) => { Console.WriteLine(""); }, (sender, args) => { args.CanExecute = true; }),
     };
 
-    public Project Project
+    public ProjectViewModel Project
     {
         get => _project;
         set => SetProperty(ref _project, value);
@@ -83,7 +82,7 @@ public class EditorViewModel : BaseViewModel
 
     internal void Init()
     {
-        RenderedImage = new WriteableBitmap(Project.Width, Project.Heigth, Project.HorizontalDpi, Project.VerticalDpi, PixelFormats.Bgra32, null);
+        RenderedImage = new WriteableBitmap(Project.Width, Project.Height, Project.HorizontalDpi, Project.VerticalDpi, PixelFormats.Bgra32, null);
     }
 
     internal void Render()

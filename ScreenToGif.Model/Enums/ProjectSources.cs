@@ -3,7 +3,7 @@ namespace ScreenToGif.Domain.Enums;
 /// <summary>
 /// The types of source of project creation.
 /// </summary>
-public enum ProjectByType
+public enum ProjectSources
 {
     Unknown = 0,
     ScreenRecorder = 1,

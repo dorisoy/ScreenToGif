@@ -125,15 +125,15 @@ namespace ScreenToGif.Native.Helpers
             try
             {
                 var cursorInfo = new CursorInfo();
-                cursorInfo.cbSize = Marshal.SizeOf(cursorInfo);
+                cursorInfo.Size = (uint)Marshal.SizeOf(cursorInfo);
 
                 if (!User32.GetCursorInfo(out cursorInfo))
                     return null;
 
-                if (cursorInfo.flags != Constants.CursorShowing)
+                if (cursorInfo.Flags != Constants.CursorShowing)
                     return null;
 
-                var hicon = User32.CopyIcon(cursorInfo.hCursor);
+                var hicon = User32.CopyIcon(cursorInfo.CursorHandle);
                 if (hicon == IntPtr.Zero)
                     return null;
 
@@ -143,13 +143,13 @@ namespace ScreenToGif.Native.Helpers
                     return null;
                 }
 
-                point.X = cursorInfo.ptScreenPos.X - iconInfo.xHotspot;
-                point.Y = cursorInfo.ptScreenPos.Y - iconInfo.yHotspot;
+                point.X = cursorInfo.ScreenPosition.X - iconInfo.XHotspot;
+                point.Y = cursorInfo.ScreenPosition.Y - iconInfo.YHotspot;
 
-                using (var maskBitmap = Image.FromHbitmap(iconInfo.hbmMask))
+                using (var maskBitmap = Image.FromHbitmap(iconInfo.Mask))
                 {
                     //Is this a monochrome cursor?  
-                    if (maskBitmap.Height == maskBitmap.Width * 2 && iconInfo.hbmColor == IntPtr.Zero)
+                    if (maskBitmap.Height == maskBitmap.Width * 2 && iconInfo.Color == IntPtr.Zero)
                     {
                         var final = new System.Drawing.Bitmap(maskBitmap.Width, maskBitmap.Width);
                         var hDesktop = User32.GetDesktopWindow();
@@ -162,7 +162,7 @@ namespace ScreenToGif.Native.Helpers
                             var offsetY = (int)((point.Y + 3) * scale);
 
                             Gdi32.BitBlt(resultHdc, 0, 0, final.Width, final.Height, dcDesktop, offsetX, offsetY, CopyPixelOperations.SourceCopy);
-                            User32.DrawIconEx(resultHdc, 0, 0, cursorInfo.hCursor, 0, 0, 0, IntPtr.Zero, 0x0003);
+                            User32.DrawIconEx(resultHdc, 0, 0, cursorInfo.CursorHandle, 0, 0, 0, IntPtr.Zero, 0x0003);
 
                             //TODO: I have to try removing the background of this cursor capture.
                             //Gdi32.BitBlt(resultHdc, 0, 0, final.Width, final.Height, dcDesktop, (int)point.X + 3, (int)point.Y + 3, CopyPixelOperations.SourceErase);
@@ -175,14 +175,14 @@ namespace ScreenToGif.Native.Helpers
                             User32.ReleaseDC(hDesktop, dcDesktop);
                         }
 
-                        Gdi32.DeleteObject(iconInfo.hbmMask);
+                        Gdi32.DeleteObject(iconInfo.Mask);
                         Gdi32.DeleteDC(dcDesktop);
 
                         return final;
                     }
 
-                    Gdi32.DeleteObject(iconInfo.hbmColor);
-                    Gdi32.DeleteObject(iconInfo.hbmMask);
+                    Gdi32.DeleteObject(iconInfo.Color);
+                    Gdi32.DeleteObject(iconInfo.Mask);
                     Gdi32.DeleteObject(hicon);
                 }
 

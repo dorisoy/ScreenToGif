@@ -347,7 +347,7 @@ public partial class Webcam
 
             _timer = new Timer { Interval = 1000 / FpsNumericUpDown.Value };
 
-            Project = new ProjectInfo().CreateProjectFolder(ProjectByType.WebcamRecorder);
+            Project = new ProjectInfo().CreateProjectFolder(ProjectSources.WebcamRecorder);
 
             RefreshButton.IsEnabled = false;
             VideoDevicesComboBox.IsEnabled = false;

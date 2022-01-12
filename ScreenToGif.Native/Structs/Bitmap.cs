@@ -33,12 +33,12 @@ public struct Bitmap
     /// <summary>
     /// The count of color planes.
     /// </summary>
-    public int bmPlanes;
+    public ushort bmPlanes;
 
     /// <summary>
     /// The number of bits required to indicate the color of a pixel.
     /// </summary>
-    public int bmBitsPixel;
+    public ushort bmBitsPixel;
 
     /// <summary>
     /// A pointer to the location of the bit values for the bitmap. The bmBits member must be a pointer to an array of 

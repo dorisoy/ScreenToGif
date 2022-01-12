@@ -1,3 +1,4 @@
+using ScreenToGif.Domain.Enums;
 using System.Windows.Ink;
 
 namespace ScreenToGif.Domain.Models.Project.Sequences;
@@ -9,6 +10,6 @@ public class DrawingSequence : Sequence
 
     public DrawingSequence()
     {
-        Type = Types.Drawing;
+        Type = SequenceTypes.Drawing;
     }
 }

@@ -11,7 +11,7 @@ using Image = System.Drawing.Image;
 
 namespace ScreenToGif.Capture;
 
-internal class ImageCapture : BaseCapture
+internal class ImageCapture : ScreenCapture
 {
     #region Variables
 
@@ -69,7 +69,7 @@ internal class ImageCapture : BaseCapture
             frame.Image = Image.FromHbitmap(CompatibleBitmap);
 
             if (IsAcceptingFrames)
-                BlockingCollection.Add(frame);
+                FrameConsumer.Add(frame);
         }
         catch (Exception)
         {
@@ -98,44 +98,43 @@ internal class ImageCapture : BaseCapture
 
             try
             {
-                var cursorInfo = new CursorInfo();
-                cursorInfo.cbSize = Marshal.SizeOf(cursorInfo);
+                var cursorInfo = new CursorInfo(false);
 
                 if (User32.GetCursorInfo(out cursorInfo))
                 {
-                    if (cursorInfo.flags == Native.Constants.CursorShowing)
+                    if (cursorInfo.Flags == Native.Constants.CursorShowing)
                     {
-                        var hicon = User32.CopyIcon(cursorInfo.hCursor);
+                        var hicon = User32.CopyIcon(cursorInfo.CursorHandle);
 
                         if (hicon != IntPtr.Zero)
                         {
                             if (User32.GetIconInfo(hicon, out var iconInfo))
                             {
-                                frame.CursorX = cursorInfo.ptScreenPos.X - Left;
-                                frame.CursorY = cursorInfo.ptScreenPos.Y - Top;
+                                frame.CursorX = cursorInfo.ScreenPosition.X - Left;
+                                frame.CursorY = cursorInfo.ScreenPosition.Y - Top;
 
                                 //(int)(SystemParameters.CursorHeight * Scale)
                                 //(int)(SystemParameters.CursorHeight * Scale)
 
-                                var ok = User32.DrawIconEx(CompatibleDeviceContext, frame.CursorX - iconInfo.xHotspot, frame.CursorY - iconInfo.yHotspot, cursorInfo.hCursor, 0, 0, CursorStep, IntPtr.Zero, 0x0003);
+                                var ok = User32.DrawIconEx(CompatibleDeviceContext, frame.CursorX - iconInfo.XHotspot, frame.CursorY - iconInfo.YHotspot, cursorInfo.CursorHandle, 0, 0, CursorStep, IntPtr.Zero, 0x0003);
 
                                 if (!ok)
                                 {
                                     CursorStep = 0;
-                                    User32.DrawIconEx(CompatibleDeviceContext, frame.CursorX - iconInfo.xHotspot, frame.CursorY - iconInfo.yHotspot, cursorInfo.hCursor, 0, 0, CursorStep, IntPtr.Zero, 0x0003);
+                                    User32.DrawIconEx(CompatibleDeviceContext, frame.CursorX - iconInfo.XHotspot, frame.CursorY - iconInfo.YHotspot, cursorInfo.CursorHandle, 0, 0, CursorStep, IntPtr.Zero, 0x0003);
                                 }
                                 else
                                     CursorStep++;
                             }
 
-                            Gdi32.DeleteObject(iconInfo.hbmColor);
-                            Gdi32.DeleteObject(iconInfo.hbmMask);
+                            Gdi32.DeleteObject(iconInfo.Color);
+                            Gdi32.DeleteObject(iconInfo.Mask);
                         }
 
                         User32.DestroyIcon(hicon);
                     }
 
-                    Gdi32.DeleteObject(cursorInfo.hCursor);
+                    Gdi32.DeleteObject(cursorInfo.CursorHandle);
                 }
             }
             catch (Exception)
@@ -152,7 +151,7 @@ internal class ImageCapture : BaseCapture
             frame.Image = Image.FromHbitmap(CompatibleBitmap);
 
             if (IsAcceptingFrames)
-                BlockingCollection.Add(frame);
+                FrameConsumer.Add(frame);
         }
         catch (Exception)
         {
@@ -179,7 +178,7 @@ internal class ImageCapture : BaseCapture
 
     public override async Task Stop()
     {
-        if (!WasStarted)
+        if (!WasFrameCaptureStarted)
             return;
 
         await base.Stop();

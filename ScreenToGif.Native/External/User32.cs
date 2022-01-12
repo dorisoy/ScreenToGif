@@ -30,6 +30,13 @@ namespace ScreenToGif.Native.External
         [DllImport(Constants.User32, SetLastError = true)]
         public static extern bool GetPhysicalCursorPos(ref PointW lpPoint);
 
+        /// <summary>
+        /// Retrieves information about the global cursor.
+        /// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getcursorinfo
+        /// </summary>
+        /// <param name="pci">A pointer to a CURSORINFO structure that receives the information.
+        /// Note that you must set the cbSize member to sizeof(CURSORINFO) before calling this function.</param>
+        /// <returns>If the function succeeds, the return value is nonzero.</returns>
         [DllImport(Constants.User32, EntryPoint = "GetCursorInfo")]
         public static extern bool GetCursorInfo(out CursorInfo pci);
 
@@ -40,7 +47,11 @@ namespace ScreenToGif.Native.External
         public static extern bool DestroyIcon(IntPtr hIcon);
 
         [DllImport(Constants.User32, EntryPoint = "GetIconInfo")]
-        public static extern bool GetIconInfo(IntPtr hIcon, out Iconinfo piconinfo);
+        public static extern bool GetIconInfo(IntPtr hIcon, out IconInfo piconinfo);
+
+        [DllImport(Constants.User32, SetLastError = false, CharSet = CharSet.Auto)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetIconInfoEx(IntPtr hicon, ref IconInfoEx piconinfo);
 
         [DllImport(Constants.User32, SetLastError = true)]
         public static extern bool DrawIconEx(IntPtr hdc, int xLeft, int yTop, IntPtr hIcon, int cxWidth, int cyHeight, int istepIfAniCur, IntPtr hbrFlickerFreeDraw, int diFlags);

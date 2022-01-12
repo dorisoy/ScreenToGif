@@ -9,7 +9,7 @@ public class RibbonTab : TabItem
 {
     #region Properties
 
-    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Image), typeof(Brush), typeof(RibbonTab));
+    public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(Brush), typeof(RibbonTab));
         
     public static readonly DependencyProperty DisplayAccentProperty = DependencyProperty.Register(nameof(DisplayAccent), typeof(bool), typeof(RibbonTab), new PropertyMetadata(true));
 

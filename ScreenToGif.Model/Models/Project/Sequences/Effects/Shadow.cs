@@ -1,9 +1,15 @@
+using ScreenToGif.Domain.Enums;
 using System.Windows.Media;
 
-namespace ScreenToGif.Domain.Models.Project.Sequences.SubSequences;
+namespace ScreenToGif.Domain.Models.Project.Sequences.Effects;
 
-public class Shadow
+public class Shadow : Effect
 {
+    public Shadow()
+    {
+        Type = EffectTypes.Shadow;
+    }
+
     public Color Color { get;set; } 
         
     public double Direction { get; set; }

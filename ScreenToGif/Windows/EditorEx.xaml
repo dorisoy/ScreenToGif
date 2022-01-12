@@ -1,9 +1,10 @@
-﻿<Window x:Class="ScreenToGif.Windows.EditorEx"
+<Window x:Class="ScreenToGif.Windows.EditorEx"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:r="clr-namespace:ScreenToGif.Controls.Ribbon"
         xmlns:c="clr-namespace:ScreenToGif.Controls"
         xmlns:l="clr-namespace:ScreenToGif.Windows"
+        xmlns:t="clr-namespace:ScreenToGif.Controls.Timeline"
         x:Name="EditorWindow" Title="{DynamicResource S.Editor.Title}" MinHeight="500" MinWidth="700" 
         Background="{DynamicResource Panel.Background.Level3}" UseLayoutRounding="True"
         FocusManager.FocusedElement="{Binding RelativeSource={x:Static RelativeSource.Self}, Mode=OneTime}"
@@ -12,13 +13,62 @@
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <r:Ribbon Grid.Row="0" x:Name="Ribbon">
+        <Ribbon IsDropDownOpen="True">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem>Content</RibbonApplicationMenuItem>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+
+            <RibbonTab Header="File">
+                <RibbonGroup Header="Group">
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                </RibbonGroup>
+
+                <RibbonGroup Header="Group">
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                </RibbonGroup>
+
+                <RibbonGroup Header="Group">
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                </RibbonGroup>
+
+                <RibbonGroup Header="Group">
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                </RibbonGroup>
+
+                <RibbonGroup Header="Group">
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                    <RibbonButton Width="50" Height="50" Content="Button"/>
+                </RibbonGroup>
+            </RibbonTab>
+
+            <RibbonTab Header="Home">
+
+            </RibbonTab>
+
+            <RibbonTab Header="Edit">
+
+            </RibbonTab>
+        </Ribbon>
+
+        <r:Ribbon Grid.Row="1" x:Name="Ribbon">
             <r:RibbonTab Header="{DynamicResource S.Editor.File}" Icon="{StaticResource Vector.Save}" IsSelected="True">
-                <Grid Height="94" Margin="2" Background="{DynamicResource Panel.Background.Level2}" Effect="{StaticResource Shadow.Invariant}">
+                <Grid Height="94" Margin="2" Background="{DynamicResource Panel.Background.Level2}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="7"/>
@@ -128,8 +178,7 @@
                         <c:ExtendedButton Grid.Column="0" Grid.Row="0" x:Name="SaveButton" Text="{DynamicResource S.Editor.File.Save}" Icon="{StaticResource Vector.Save}" 
                                        MinWidth="55" ContentHeight="28" ContentWidth="28" Command="{StaticResource Command.SaveAs}" Style="{StaticResource Style.Button.Vertical}"
                                        ToolTip="{Binding Command, RelativeSource={RelativeSource Self}, Converter={StaticResource CommandToInputGestureText}}" 
-                                       ToolTipService.Placement="Bottom" ToolTipService.HorizontalOffset="-5"
-                                       IsEnabled="{Binding FilledList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:Editor}}}"/>
+                                       ToolTipService.Placement="Bottom" ToolTipService.HorizontalOffset="-5"/>
 
                         <c:ExtendedButton Grid.Column="1" Grid.Row="0" x:Name="LoadButton" Text="{DynamicResource S.Editor.File.Load}" Icon="{StaticResource Vector.Open}" 
                                        MinWidth="55" ContentHeight="28" ContentWidth="28" Command="{StaticResource Command.Load}" Style="{StaticResource Style.Button.Vertical}"
@@ -144,8 +193,7 @@
                         <c:ExtendedButton Grid.Column="3" Grid.Row="0" x:Name="DiscardProjectButton" Text="{DynamicResource S.Editor.File.Discard}" Icon="{StaticResource Vector.Remove}" 
                                        MinWidth="55" ContentHeight="28" ContentWidth="28" Command="{StaticResource Command.DiscardProject}" Style="{StaticResource Style.Button.Vertical}"
                                        ToolTip="{Binding Command, RelativeSource={RelativeSource Self}, Converter={StaticResource CommandToInputGestureText}}" 
-                                       ToolTipService.Placement="Bottom" ToolTipService.HorizontalOffset="-5"
-                                       IsEnabled="{Binding FilledList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:Editor}}}"/>
+                                       ToolTipService.Placement="Bottom" ToolTipService.HorizontalOffset="-5"/>
                     </Grid>
 
                     <Separator Grid.Column="5" Grid.Row="0" Width="1" Height="Auto" HorizontalAlignment="Left" Margin="3,2"/>
@@ -166,7 +214,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <!--Action Stack-->
+
                     <Grid Grid.Column="0" Margin="0,1,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -206,7 +254,7 @@
 
                     <Separator Grid.Column="1" Grid.Row="0" Width="1" Height="Auto" HorizontalAlignment="Left" Margin="3,2"/>
 
-                    <!--Clipboard-->
+
                     <Grid Grid.Column="2" Margin="0,1,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -257,7 +305,7 @@
 
                     <Separator Grid.Column="3" Grid.Row="0" Width="1" Height="Auto" HorizontalAlignment="Left" Margin="3,2"/>
 
-                    <!--Zoom-->
+
                     <Grid Grid.Column="4" Margin="0,1,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -306,7 +354,7 @@
 
                     <Separator Grid.Column="5" Grid.Row="0" Width="1" Height="Auto" HorizontalAlignment="Left" Margin="3,2"/>
 
-                    <!--Select-->
+
                     <Grid Grid.Column="6" Margin="0,1,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -355,65 +403,26 @@
             </r:RibbonTab>
 
             <r:RibbonTab Header="{DynamicResource S.Editor.Playback}" Icon="{StaticResource Vector.Play}">
-                
+
             </r:RibbonTab>
 
             <r:RibbonTab Header="{DynamicResource S.Editor.Edit}" Icon="{StaticResource Vector.Pen}">
-                
+
             </r:RibbonTab>
 
             <r:RibbonTab Header="{DynamicResource S.Editor.Image}" Icon="{StaticResource Vector.Image}">
-                
+
             </r:RibbonTab>
 
             <r:RibbonTab Header="{DynamicResource S.Editor.Transitions}" Icon="{StaticResource Vector.Fade}">
-                
+
             </r:RibbonTab>
 
             <r:RibbonTab Header="{DynamicResource S.Editor.Statistics}" Icon="{StaticResource Vector.Info}">
-                
+
             </r:RibbonTab>
 
-            <r:RibbonTab Header="Other" Visibility="Collapsed">
-                <r:RibbonPanel Height="94" Margin="2" Background="{DynamicResource Panel.Background.Level2}">
-                    <r:RibbonGroup Header="New">
-                        <r:RibbonGroup.GroupSizeDefinitions>
-                            <r:GroupSizeDefinition>
-                                <r:ItemSizeDefinition/>
-                                <r:ItemSizeDefinition/>
-                                <r:ItemSizeDefinition/>
-                            </r:GroupSizeDefinition>
-                            <r:GroupSizeDefinition>
-                                <r:ItemSizeDefinition/>
-                                <r:ItemSizeDefinition IconSize="Small"/>
-                                <r:ItemSizeDefinition IconSize="Small"/>
-                            </r:GroupSizeDefinition>
-                            <r:GroupSizeDefinition>
-                                <r:ItemSizeDefinition/>
-                                <r:ItemSizeDefinition IconSize="Small" IsHeaderVisible="False"/>
-                                <r:ItemSizeDefinition IconSize="Small" IsHeaderVisible="False"/>
-                            </r:GroupSizeDefinition>
-                            <r:GroupSizeDefinition IsCollapsed="True"/>
-                        </r:RibbonGroup.GroupSizeDefinitions>
 
-                        <r:RibbonItem Text="Screen Recording" Icon="{StaticResource Vector.Add}" Mode="Button"/>
-                        <r:RibbonItem Text="Webcam Recording" Icon="{StaticResource Vector.Editor}" Mode="Button"/>
-                        <r:RibbonItem Text="Board Recording" Icon="{StaticResource Vector.Options}" Mode="Button"/>
-                    </r:RibbonGroup>
-
-                    <r:RibbonGroup Header="Insert">
-                        <r:RibbonItem Text="Teste 1" Icon="{StaticResource Vector.Add}" Mode="Button"/>
-                        <r:RibbonItem Text="Teste 2" Icon="{StaticResource Vector.Editor}" Mode="Button"/>
-                        <r:RibbonItem Text="Teste 3" Icon="{StaticResource Vector.Options}" Mode="Button"/>
-                    </r:RibbonGroup>
-
-                    <r:RibbonGroup Header="File">
-                        <r:RibbonItem Text="Teste 1" Icon="{StaticResource Vector.Add}" Mode="Button"/>
-                        <r:RibbonItem Text="Teste 2" Icon="{StaticResource Vector.Editor}" Mode="Button"/>
-                        <r:RibbonItem Text="Teste 3" Icon="{StaticResource Vector.Options}" Mode="Button"/>
-                    </r:RibbonGroup>
-                </r:RibbonPanel>
-            </r:RibbonTab>
         </r:Ribbon>
 
         <!--Welcome screen-->
@@ -421,7 +430,8 @@
         <!--Image Viewer-->
         <!--Side panel-->
         <!--Background-->
-        
+
         <!--Timeline with multiple tracks-->
+        <t:Timeline Grid.Row="3" Height="130"/>
     </Grid>
 </Window>

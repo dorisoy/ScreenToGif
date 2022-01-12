@@ -134,7 +134,7 @@ internal class DirectChangedImageCapture : DirectImageCapture
             frame.Path = $"{Project.FullPath}{FrameCount}.png";
             frame.Delay = FrameRate.GetMilliseconds();
             frame.Image = bitmap;
-            BlockingCollection.Add(frame);
+            FrameConsumer.Add(frame);
 
             #endregion
 
@@ -318,7 +318,7 @@ internal class DirectChangedImageCapture : DirectImageCapture
             frame.Path = $"{Project.FullPath}{FrameCount}.png";
             frame.Delay = FrameRate.GetMilliseconds();
             frame.Image = bitmap;
-            BlockingCollection.Add(frame);
+            FrameConsumer.Add(frame);
 
             #endregion
 
